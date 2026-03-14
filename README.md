@@ -1,0 +1,1 @@
+Server service https://gamelingo-api-53051936370.asia-southeast2.run.app/
