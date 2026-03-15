@@ -5,6 +5,8 @@ ENV/
 env/
 .env
 
+credentials
+
 # Mengabaikan bytecode Python (agar tidak mengotori commit)
 **/__pycache__/
 *.py[cod]

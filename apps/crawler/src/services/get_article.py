@@ -1,49 +1,10 @@
 from newspaper import Article, Config
 from playwright.async_api import async_playwright
 
-from src.schemas.article import ArticleSchema
+from src.db.tables.raw_contents.model import RawContent
 
 
-# async def get_article(url: str) -> ArticleSchema:
-#     async with async_playwright() as p:
-#         browser = await p.chromium.launch(headless=True)
-#         page = await browser.new_page()
-
-#         try:
-#             # 1. Blokir Gambar agar cepat & hemat RAM
-#             await page.route(
-#                 "**/*.{png,jpg,jpeg,webp,gif}", lambda route: route.abort()
-#             )
-
-#             # 2. Buka URL
-#             await page.goto(url, wait_until="networkidle", timeout=30000)
-
-#             # 3. Hapus elemen pengganggu (Cookie Banners) sebelum parsing
-#             await page.evaluate("""() => {
-#                 const selectors = ['[id*="cookie"]', '[class*="cookie"]', '[id*="policy"]', '.modal', '.overlay'];
-#                 selectors.forEach(s => {
-#                     document.querySelectorAll(s).forEach(el => el.remove());
-#                 });
-#             }""")
-
-#             html_content = await page.content()
-
-#             article = Article(url)
-#             article.set_html(html_content)
-#             article.parse()
-
-#             return ArticleSchema(
-#                 title=article.title,
-#                 content=article.text,
-#                 url=url,
-#                 authors=article.authors,
-#                 top_image=article.top_image,
-#             )
-#         finally:
-#             await browser.close()
-
-
-async def get_article(url: str) -> ArticleSchema:
+async def get_article(url: str) -> RawContent:
     async with async_playwright() as p:
         # Gunakan Chrome asli jika terinstall agar tidak mudah terdeteksi bot
         browser = await p.chromium.launch(headless=True)
@@ -81,17 +42,22 @@ async def get_article(url: str) -> ArticleSchema:
             article.parse()
 
             # Kalau content masih kosong, jangan masukkan ke list
-            status = "success" if len(article.text) > 100 else "failed"
+            status = "pending" if len(article.text) > 100 else "failed"
 
-            return ArticleSchema(
+            return RawContent(
                 title=article.title,
-                content=article.text,
-                url=url,
-                authors=article.authors,
-                top_image=article.top_image,
+                content_raw=article.text,
+                source_url=url,
+                image_url=article.top_image,
                 status=status,
             )
-        except Exception as e:
-            return ArticleSchema(title="Error", content="", url=url, status="failed")
+        except Exception:
+            return RawContent(
+                title="Error",
+                content_raw="",
+                source_url=url,
+                status="failed",
+                image_url="",
+            )
         finally:
             await browser.close()

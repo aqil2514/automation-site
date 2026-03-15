@@ -4,3 +4,7 @@ psycopg2-binary
 pydantic_settings
 pydantic
 asyncpg
+google-genai
+
+# Deprecated Soon
+google-cloud-aiplatform

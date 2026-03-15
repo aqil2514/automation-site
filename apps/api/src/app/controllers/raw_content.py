@@ -1,5 +1,8 @@
+from typing import Optional
+
 from fastapi import APIRouter, HTTPException, status
 
+from src.db.tables.raw_contents.select import select_raw_contents
 from src.db.tables.raw_contents.insert import insert_new_raw_contents
 from src.db.tables.raw_contents.model import RawContent
 
@@ -30,3 +33,29 @@ async def create_new_raw_contents(payload: RawContent):
     except Exception as e:
         print(f"Detail Error : {e}")
         raise HTTPException(500, detail="Data gagal dibuat")
+
+
+@router.get(
+    "/raw_contents",
+    response_model=list[RawContent],
+    summary="Mengambil Daftar Konten Mentah",
+    description="Mengambil data konten mentah. Bisa difilter berdasarkan status (pending/processing/completed).",
+    response_description="Daftar konten mentah yang sesuai kriteria",
+)
+async def get_raw_contents(
+    status_query: Optional[str] = None,
+):
+    """
+    Ambil data dengan opsi filter:
+
+    - **status_query**: (Optional) Filter berdasarkan status data. Contoh: `pending`
+    """
+    try:
+        data = await select_raw_contents(status_filter=status_query)
+        return data
+    except Exception as e:
+        print(f"Error: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Gagal mengambil data",
+        )
