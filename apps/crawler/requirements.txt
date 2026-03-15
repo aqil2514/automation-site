@@ -2,3 +2,8 @@ uvicorn
 pytest-playwright
 playwright 
 pydantic-settings
+newspaper3k
+"lxml[html_clean]"
+feedparser
+aiohttp
+googlenewsdecoder
