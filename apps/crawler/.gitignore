@@ -1,0 +1,29 @@
+# --- Python ---
+# Mengabaikan folder virtual environment
+venv/
+ENV/
+env/
+.env
+
+# Mengabaikan bytecode Python (agar tidak mengotori commit)
+**/__pycache__/
+*.py[cod]
+*$py.class
+
+# --- IDE / Editors ---
+# Mengabaikan konfigurasi VS Code (opsional, jika ingin berbagi config hapus baris ini)
+.vscode/
+.idea/
+
+# --- Database / Temporary ---
+# Jika suatu saat pakai SQLite untuk testing lokal
+*.db
+*.sqlite3
+
+# --- OS ---
+.DS_Store
+Thumbs.db
+
+# --- Docker ---
+# Tergantung kebutuhan, tapi biasanya log docker tidak di-commit
+*.log

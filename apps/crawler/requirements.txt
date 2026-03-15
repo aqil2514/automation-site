@@ -1,0 +1,4 @@
+uvicorn
+pytest-playwright
+playwright 
+pydantic-settings
