@@ -22,32 +22,28 @@ async def main():
             print(f"[{index}/{len(found_links)}] Mengambil konten: {link[:60]}...")
 
             # Panggil fungsi get_article Anda
-            article_obj = await get_article(link)
+            article_data = await get_article(link)
 
-            # 3. Mapping hasil ke dictionary agar rapi
-            article_data = {
-                "title": article_obj.title,
-                "content": article_obj.content,
-                "authors": article_obj.authors,
-                "top_image": article_obj.top_image,
-                "url": link,
-            }
-
-            all_articles_data.append(article_data)
+            # VALIDASI: Simpan hanya jika ada isinya
+            if article_data.status == "success" and len(article_data.content) > 150:
+                all_articles_data.append(article_data)
+                print(f"✅ Sukses: {article_data.title[:50]}...")
+            else:
+                # Jika kosong, mungkin ini halaman video/galeri, kita skip saja
+                print(f"⚠️ Skip: Konten terlalu pendek/kosong ({link[:40]}...)")
 
         except Exception as e:
             print(f"Gagal mengambil {link}: {e}")
 
-    # 4. Hasil akhir (siap dikirim ke frontend atau database)
+    # 4. Hasil akhir
     print(f"\nSelesai! Berhasil mengumpulkan {len(all_articles_data)} artikel.")
 
-    # Contoh cetak satu judul artikel pertama
-    if all_articles_data:
-        print(f"Judul artikel pertama: {all_articles_data[0]['title']}")
+    # Konversi list of ArticleSchema menjadi list of dict
+    json_ready_data = [article.model_dump() for article in all_articles_data]
 
-    # OPSIONAL: Simpan ke JSON agar bisa dibaca Next.js
+    # Simpan ke JSON
     with open("articles_result.json", "w", encoding="utf-8") as f:
-        json.dump(all_articles_data, f, indent=4)
+        json.dump(json_ready_data, f, indent=4, ensure_ascii=False)
 
 
 if __name__ == "__main__":
