@@ -8,3 +8,4 @@ class ArticleSchema(BaseModel):
     url: str
     authors: List[str] = []
     top_image: Optional[str] = None
+    status: str
