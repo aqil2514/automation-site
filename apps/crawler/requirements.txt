@@ -8,3 +8,6 @@ feedparser
 aiohttp
 googlenewsdecoder
 asyncpg
+schedule
+watchdog
+httpx

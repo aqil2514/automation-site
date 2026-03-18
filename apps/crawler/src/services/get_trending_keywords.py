@@ -16,7 +16,7 @@ def get_automated_keywords(limit: int = 5):
 
         keywords = []
         for entry in feed.entries[:limit]:
-            # Kita ambil judul berita utama, lalu bersihkan
+            # Ambil judul berita utama, lalu bersihkan
             # Contoh: "Harga Emas Antam Hari Ini Naik" -> diambil "Harga Emas Antam"
             full_title = entry.title.split(" - ")[0]  # type: ignore # Buang nama media di belakang
             clean_keyword = " ".join(full_title.split()[:3])  # Ambil 3 kata pertama
